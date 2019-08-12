@@ -66,10 +66,6 @@ public class StaticShader extends ShaderProgram{
 		}
 	}
 	
-	public void loadClipPlane(Vector4f plane){
-		super.loadVector(location_plane, plane);
-	}
-	
 	public void loadNumberOfRows(int numberOfRows){
 		super.loadFloat(location_numberOfRows, numberOfRows);
 	}

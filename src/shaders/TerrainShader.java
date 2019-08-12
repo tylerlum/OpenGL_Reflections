@@ -76,10 +76,6 @@ public class TerrainShader extends ShaderProgram{
 		super.loadInt(location_blendMap, 4);
 	}
 	
-	public void loadClipPlane(Vector4f clipPlane){
-		super.loadVector(location_plane, clipPlane);
-	}
-	
 	public void loadSkyColour(float r, float g, float b){
 		super.loadVector(location_skyColour, new Vector3f(r,g,b));
 	}
