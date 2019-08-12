@@ -82,7 +82,8 @@ public class NormalMappedObjLoader {
 				texturesArray, normalsArray, tangentsArray);
 		int[] indicesArray = convertIndicesListToArray(indices);
 
-		return loader.loadToVAO(verticesArray, texturesArray, normalsArray, tangentsArray, indicesArray);
+		//return loader.loadToVAO(verticesArray, texturesArray, normalsArray, tangentsArray, indicesArray)
+		return null;
 	}
 
 	private static void calculateTangents(VertexNM v0, VertexNM v1, VertexNM v2,
