@@ -165,11 +165,14 @@ public class MainGameLoop {
 		WaterShader waterShader = new WaterShader();
 		WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix());
 		List<WaterTile> waters = new ArrayList<WaterTile>();
-		waters.add(new WaterTile(75, -75, 0));
+		WaterTile water = new WaterTile(75, -75, 0);
+		waters.add(water);
 		
-		WaterFrameBuffers fbos = new WaterFrameBuffers();
-		GuiTexture gui = new GuiTexture(fbos.getReflectionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.5f, 0.5f));
-		guiTextures.add(gui);
+		WaterFrameBuffers buffers = new WaterFrameBuffers();
+		GuiTexture refraction = new GuiTexture(buffers.getRefractionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		GuiTexture reflection = new GuiTexture(buffers.getReflectionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
+		guiTextures.add(refraction);
+		guiTextures.add(reflection);
 		
 		//****************Game Loop Below*********************
 
@@ -178,11 +181,25 @@ public class MainGameLoop {
 			camera.move();
 			picker.update();
 			
-			fbos.bindReflectionFrameBuffer();
-			renderer.renderScene(entities, terrains, lights, camera);
-			fbos.unbindCurrentFrameBuffer();
+			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 			
-			renderer.renderScene(entities, terrains, lights, camera);
+			// Reflection
+			buffers.bindReflectionFrameBuffer();
+			float distance = 2 * (camera.getPosition().y - water.getHeight());
+			camera.getPosition().y -= distance;
+			camera.invertPitch();
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, 1, 0, -water.getHeight()));
+			camera.getPosition().y += distance;
+			camera.invertPitch();
+
+			// Refraction
+			buffers.bindRefractionFrameBuffer();
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, -1, 0, water.getHeight()));
+
+			// Screen
+			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+			buffers.unbindCurrentFrameBuffer();
+			renderer.renderScene(entities, terrains, lights, camera, new Vector4f(0, -1, 0, 1000));
 			waterRenderer.render(waters, camera);
 			guiRenderer.render(guiTextures);
 			
