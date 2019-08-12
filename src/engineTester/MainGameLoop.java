@@ -162,18 +162,14 @@ public class MainGameLoop {
 	
 
 		// WATER RENDERING
+		WaterFrameBuffers buffers = new WaterFrameBuffers();
+
 		WaterShader waterShader = new WaterShader();
-		WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix());
+		WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
 		List<WaterTile> waters = new ArrayList<WaterTile>();
 		WaterTile water = new WaterTile(75, -75, 0);
 		waters.add(water);
-		
-		WaterFrameBuffers buffers = new WaterFrameBuffers();
-		GuiTexture refraction = new GuiTexture(buffers.getRefractionTexture(), new Vector2f(0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-		GuiTexture reflection = new GuiTexture(buffers.getReflectionTexture(), new Vector2f(-0.5f, 0.5f), new Vector2f(0.25f, 0.25f));
-		guiTextures.add(refraction);
-		guiTextures.add(reflection);
-		
+
 		//****************Game Loop Below*********************
 
 		while (!Display.isCloseRequested()) {
